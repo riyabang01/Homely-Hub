@@ -1,0 +1,33 @@
+# BACKEND
+backendObfuscated/node_modules/
+backendObfuscated/.env
+
+# FRONTEND
+frontend/node_modules/
+frontend/.env
+
+# GENERAL
+node_modules/
+*.env
+
+# DEPENDENCIES
+/node_modules
+/.pnp
+.pnp.js
+
+# TESTING
+/coverage
+
+# PRODUCTION
+/build
+
+# MISC
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
