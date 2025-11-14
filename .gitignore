@@ -6,6 +6,10 @@ backendObfuscated/.env
 frontend/node_modules/
 frontend/.env
 
+# DATABASE
+Database/
+
+
 # GENERAL
 node_modules/
 *.env
