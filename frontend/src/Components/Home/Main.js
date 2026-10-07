@@ -1,19 +1,23 @@
-import React from 'react'
-//Outlet is used to render the content of nested routes
-import {Outlet} from "react-router-dom";
+
+import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 
-//Arrow Function
 const Main = () => {
   return (
-    <div>
-      {/* Rendering the header component */}
+    <div className="d-flex flex-column min-vh-100">
+      
       <Header />
-      <Outlet />
+      
+      
+      <main className="flex-grow-1 pb-5">
+        <Outlet />
+      </main>
+      
+      
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 export default Main;

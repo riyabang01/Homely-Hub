@@ -1,61 +1,75 @@
 import "./App.css";
-import { createBrowserRouter,createRoutesFromElements,Route, RouterProvider,} from "react-router-dom";
+import React, { useEffect } from "react";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Flip, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 import Main from "./Components/Home/Main";
 import PropertyList from "./Components/Home/PropertyList";
 import PropertyDetails from "./Components/PropertyDetails/PropertyDetails";
+import BookingSuccess from './Components/PropertyDetails/BookingSuccess';
+
+import Payment from "./Payment/payment"; 
+
+
 import Login from "./Components/User/Login";
-import { Flip , ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"
-import { useEffect } from "react";
-import { useDispatch,useSelector } from "react-redux";
-import { currentUser } from "./Store/User/user-action";
-import { userActions } from "./Store/User/user-slice";
 import Signup from "./Components/User/Signup";
 import Profile from "./Components/User/Profile";
-import EditProfile from "./Components/User/EditProfile"
+import EditProfile from "./Components/User/EditProfile";
 import UpdatePassword from "./Components/User/UpdatePassword";
+import ForgotPassword from "./Components/User/ForgotPassword"; 
+import ResetPassword from "./Components/User/ResetPassword";   
+
+
+import { currentUser } from "./Store/User/user-action";
 
 function App() {
-  const dispatch =useDispatch();
-  const {errors} =useSelector((state) => state.user);
-  useEffect(() =>{
-    if (errors){
-      dispatch(userActions.clearError());
-    }
+  const dispatch = useDispatch();
+
+  useEffect(() => {
     dispatch(currentUser());
-  },[errors,dispatch])
-  //mananges the routing configuration for the application.
-  const router = createBrowserRouter (
-  // creates routes from the elements passed to it.
-  createRoutesFromElements (
-  //defines a Route component that matches all paths "/" and renders the Main com
-  //exact properties ensure that the route matches exactly what u gave in path
-  <Route path="/" element={<Main />} id="main" exact>
-  <Route id="home" index element={<PropertyList/>} exact/>
-  <Route
-     element={<PropertyDetails />}
-     id="PropertyDetails"
-     path="propertylist/:id"
-     exact
-    /> 
-    <Route id="login" path="login" element={<Login/>}/>
-    <Route id="signup" path="signup" element={<Signup/>}/>
-    <Route id="profile" path="profile" element={<Profile/>}/>
-    <Route id="editprofile" path="editprofile" element={<EditProfile/>}/>
-    <Route id="updatepassword" path="user/updatepassword" element={<UpdatePassword/>}/>
-  </Route>)
+  }, [dispatch]);
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<Main />} id="main">
+        
+        <Route id="home" index element={<PropertyList />} />
+        <Route id="propertyDetails" path="propertylist/:id" element={<PropertyDetails />} />
+         <Route path="/booking-success" element={<BookingSuccess />} />
+         
+        <Route id="payment" path="payment" element={<Payment />} /> 
+        
+        
+        <Route id="login" path="login" element={<Login />} />
+        <Route id="signup" path="signup" element={<Signup />} />
+        
+   
+        <Route id="forgotPassword" path="user/forgotpassword" element={<ForgotPassword />} />
+        <Route id="resetPassword" path="user/resetPassword/:token" element={<ResetPassword />} />
+        <Route id="updatePassword" path="user/updatepassword" element={<UpdatePassword />} />
+        
+        
+        <Route id="profile" path="profile" element={<Profile />} />
+        <Route id="editProfile" path="editprofile" element={<EditProfile />} />
+      </Route>
+    )
   );
+
   return (
     <div className="App">
-    {/* This ensures that the rounting functionallity is available throughout the a*/}
-    <RouterProvider router={router} />
-    <ToastContainer
-    position="bottom-center"
-    autoClose={3000}
-    draggable={true}
-    transition={Flip}
-    />
+      <RouterProvider router={router} />
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        draggable={true}
+        transition={Flip}
+        theme="colored"
+      />
     </div>
-    );
-  }
-  export default App;
+  );
+}
+
+export default App;

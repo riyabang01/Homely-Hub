@@ -1,126 +1,207 @@
 import React, { useState } from "react";
 import moment from "moment";
 import { DatePicker, Space } from "antd";
-import {useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const BookingForm = ({
-price,
-propertyName,
-address,
-maximumGuest,
-propertyId,
-currentBookings,
-}) =>{
-const [paymentData, setPaymentData] = useState({});
-const [userData, setUserData] = useState({});
-const {RangePicker} = DatePicker;
-const dispatch = useDispatch();
-const navigate = useNavigate();
-const handleDateChange = (value, dateString) =>{
-handleFilterChange("checkinDate", dateString [0]);
-handleFilterChange("checkoutDate", dateString[1]);
-const calculatedNights = moment(dateString[1], "YYYY-MM-DD").diff(
-    moment (dateString[0], "YYYY-MM-DD"),
-    "days"
-    );
+  price,
+  propertyName,
+  address,
+  maximumGuest,
+  propertyId,
+  currentBookings = [],
+}) => {
+  const [paymentData, setPaymentData] = useState({});
+  const [userData, setUserData] = useState({ totalGuests: "", name: "", phoneNo: "" });
+  const [isBooking, setIsBooking] = useState(false); 
+  
+  const { RangePicker } = DatePicker;
+  const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.user || {});
+  const currentUserId = user?.user?._id || user?._id;
+
+  const handleFilterChange = (keyName, value) => {
+    setPaymentData((prevData) => ({
+      ...prevData,
+      [keyName]: value,
+    }));
+  };
+
+  const handleDateChange = (dates) => {
+    if (!dates || !dates[0] || !dates[1]) {
+      handleFilterChange("checkinDate", null);
+      handleFilterChange("checkoutDate", null);
+      handleFilterChange("nights", 0);
+      handleFilterChange("totalPrice", 0);
+      return;
+    }
+
+    const startMoment = moment(dates[0].valueOf());
+    const endMoment = moment(dates[1].valueOf());
+
+    const calculatedNights = endMoment.diff(startMoment, "days");
     const calculatedTotalPrice = price * calculatedNights;
+
+    const dbCheckinString = startMoment.format("YYYY-MM-DD");
+    const dbCheckoutString = endMoment.format("YYYY-MM-DD");
+
+    handleFilterChange("checkinDate", dbCheckinString);
+    handleFilterChange("checkoutDate", dbCheckoutString);
     handleFilterChange("nights", calculatedNights);
     handleFilterChange("totalPrice", calculatedTotalPrice);
+  };
 
-}
-let disabledDates = [];
-currentBookings.forEach((dates) =>
-disabledDates.push({ start: dates.fromDate, end: dates.toDate })
-);
-const isDateDisabled = (current) => {
-    if (!disabledDates.length) {
-    return current.isBefore(Date.now(), "day");
-    } else {
-    return disabledDates.some ((date) => {
-    const startDate = new Date(date.start);
-    const endDate = new Date(date.end).setHours (23, 59, 59, 999);
-    const currentDate = new Date(current);
-    return (
-    current.isBefore(Date.now(), "day") || 
-    (currentDate >= startDate && currentDate <= endDate)
-    );});
-    }};
-const handleFilterChange = (keyName, value) => {
-    setPaymentData((prevData) =>({
-    ...prevData,
-    [keyName]: value,
-    }));
+  const isDateDisabled = (current) => {
+    if (!current) return false;
+    
+    const currentMoment = moment(current.valueOf());
+    
+    const isPastDate = currentMoment.isBefore(moment(), "day");
+    if (isPastDate) return true;
+
+    return currentBookings.some((booking) => {
+      const start = moment(booking.fromDate, "YYYY-MM-DD").startOf("day");
+      const end = moment(booking.toDate, "YYYY-MM-DD").endOf("day");
+      return currentMoment.isBetween(start, end, "day", "[]");
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsBooking(true); 
+
+    const guestCount = Number(userData.totalGuests);
+
+    const finalBookingDetails = {
+      property: propertyId,
+      user: currentUserId,
+      price: paymentData.totalPrice || 0,
+      fromDate: paymentData.checkinDate,
+      toDate: paymentData.checkoutDate,
+      guests: guestCount,
+      totalGuests: guestCount,
+      numberOfNights: paymentData.nights || 0,
+      paid: true
     };
-    return (
-        <div className="form-container">
-        <form className="payment-form">
-        <div className="price-pernight">
-        <b>&#8377; {price}</b>
-        <span> / per night</span>
-        </div>
-        <div className="payment-field">
-        <div className="date">
-        <Space direction="vertical" size={"12"}>
-        <RangePicker
-        format="YYYY-MM-DD"
-        disabledDate={isDateDisabled}
-        onChange={handleDateChange}
-        />
-        </Space>
-        </div>
-        <div className="guest">
-<label className="payment-labels">Number of Guests: </label>
-<br />
-<input
-className="no-of-guest"
-placeholder="Number Of Guests"
-type="number"
-min="1"
-max={maximumGuest}
-required
-onChange={(e) => {
-setUserData((prev) => ({...prev, guests: e.target.value }));
-}}
-/>
-</div> 
-<div className="name-phoneno">
-<label className="payment-labels">Your Full Name: </label>
-<br />
-<input
-type="text"
-className="full-name"
-placeholder="Name"
-required
-onChange={(e) => {
-setUserData((prev) => ({ ...prev, name: e.target.value }));
-}}
-minLength="3"
-/>
-<br/>
-<label className="payment-labels">Phone Number:</label><br/>
-<input
-type="tel"
-className="phone-number"
-placeholder="Number"
-maxlength="10"
-required
-onChange={(e) => {
-setUserData((prev) => ({ ... prev, phoneNo: e.target.value }));
-}}
-pattern="[0-9]{10}"
-/>
-</div>
-</div>
-<div className="book-place">
-<button>
-Book this place &#8377; {paymentData ["totalPrice"] || 0}
-</button>
-</div>
-</form>
-</div>
-);
-};
 
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/rent/user/booking/new", finalBookingDetails, {
+        withCredentials: true
+      });
+
+      if (response.data.status === "success" || response.status === 200) {
+        const savedBooking = response.data.booking || {};
+        
+        const localBackup = {
+          id: savedBooking._id || Date.now(),
+          propertyName,
+          address,
+          name: userData.name || user?.name,
+          phoneNo: userData.phoneNo || user?.phoneNumber,
+          checkinDate: paymentData.checkinDate,
+          checkoutDate: paymentData.checkoutDate,
+          nights: paymentData.nights,
+          totalPrice: paymentData.totalPrice,
+          totalGuests: Number(savedBooking.guests) || Number(savedBooking.totalGuests) || guestCount,
+          guests: Number(savedBooking.guests) || Number(savedBooking.totalGuests) || guestCount
+        };
+
+        const existingBookings = JSON.parse(localStorage.getItem("allBookings")) || [];
+        existingBookings.unshift(localBackup);
+        localStorage.setItem("allBookings", JSON.stringify(existingBookings));
+
+        setTimeout(() => {
+          navigate("/booking-success");
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Database Save Failed:", error);
+      alert(error.response?.data?.message || "Something went wrong with the database connection.");
+      setIsBooking(false);
+    }
+  };
+
+  return (
+    <div className="form-container">
+      <form className="payment-form" onSubmit={handleSubmit}>
+        <div className="price-pernight">
+          <b>₹ {price}</b> <span> / per night</span>
+        </div>
+        
+        <div className="payment-field">
+          <div className="date">
+            <Space direction="vertical" size="12">
+              <RangePicker 
+                format="DD-MM-YYYY" 
+                disabledDate={isDateDisabled} 
+                onChange={handleDateChange} 
+              />
+            </Space>
+          </div>
+
+          <div className="guest">
+            <label className="payment-labels">Number of Guests: </label>
+            <br />
+            <input
+              className="no-of-guest"
+              placeholder="Number Of Guests"
+              type="number"
+              min="1"
+              max={maximumGuest}
+              value={userData.totalGuests}
+              required
+              onChange={(e) => {
+                const val = e.target.value;
+                setUserData((prev) => ({ ...prev, totalGuests: val }));
+              }}
+            />
+          </div>
+
+          <div className="name-phoneno">
+            <label className="payment-labels">Your Full Name: </label>
+            <br />
+            <input
+              type="text"
+              className="full-name"
+              placeholder="Name"
+              value={userData.name}
+              required
+              minLength="3"
+              onChange={(e) => {
+                const val = e.target.value;
+                setUserData((prev) => ({ ...prev, name: val }));
+              }}
+            />
+            <br />
+            <label className="payment-labels">Phone Number:</label>
+            <br />
+            <input
+              type="tel"
+              className="phone-number"
+              placeholder="Number"
+              maxLength="10"
+              value={userData.phoneNo}
+              required
+              pattern="[0-9]{10}"
+              onChange={(e) => {
+                const val = e.target.value;
+                setUserData((prev) => ({ ...prev, phoneNo: val }));
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="book-place">
+          <button type="submit" disabled={isBooking} className={isBooking ? "booked-btn" : "book-btn"}>
+            {isBooking ? "✓ Booked" : `Book this place ₹ ${paymentData["totalPrice"] || 0}`}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 export default BookingForm;

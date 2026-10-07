@@ -1,15 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
-import propertySlice from "./Property/property-slice";
-import propertyDetailsSlice from "./PropertyDetails/propertyDetails-slice";
-import userSlice from "./User/user-slice";
 
+import propertyReducer from "./Property/property-slice";
+import propertyDetailsReducer from "./PropertyDetails/propertyDetails-slice";
+import userReducer from "./User/user-slice";
+import paymentReducer from "./Payment/payment-slice"; 
 
 const store = configureStore({
   reducer: {
-  properties:propertySlice.reducer,
-  propertydetails:propertyDetailsSlice.reducer,
-  user:userSlice.reducer,
+    
+    properties: propertyReducer,
+    propertydetails: propertyDetailsReducer,
+    user: userReducer,
+    payment: paymentReducer, 
   },
+  
 });
 
 export default store;

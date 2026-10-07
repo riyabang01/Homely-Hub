@@ -1,46 +1,60 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const propertySlice = createSlice({
-  //slice name
-  name: "property",
-  //initial state for the property slice
+const initialState = {
+  properties: [],
+  totalProperties: 0,
+  searchParams: {}, 
+  error: null, 
+  loading: false, 
+};
 
-  initialState: {
-    properties: [],
-    totalProperties: 0,
-    searchParams: {}, //parameters used to search
-    error: null, //error state
-    loading: false, //loading state for the property
-  },
-  //reducers function to handle different function
+const propertySlice = createSlice({
+  name: "property",
+  initialState,
   reducers: {
+    
     getRequest(state) {
       state.loading = true;
+      state.error = null; 
     },
-    //Action to update properties state with fetch data
-
+    
+   
     getProperties(state, action) {
-      state.properties = action.payload.data;
-      state.totalProperties = action.payload.all_properties;
+     
+      state.properties = action.payload?.data || [];
+      state.totalProperties = action.payload?.all_properties || 0;
       state.loading = false;
     },
-    //action to search parameters
+    
+    
     updateSearchParams: (state, action) => {
-      state.searchParams =
-        Object.keys(action.payload).length === 0
-          ? {}
-          : {
-              ...state.searchParams,
-              ...action.payload,
-            };
+      if (Object.keys(action.payload).length === 0) {
+        
+        state.searchParams = {};
+      } else {
+      
+        state.searchParams = {
+          ...state.searchParams,
+          ...action.payload,
+        };
+      }
     },
 
-    //action to update error state
+   
     getErrors(state, action) {
       state.error = action.payload;
+      state.loading = false; 
     },
+
+
+    clearPropertyErrors(state) {
+      state.error = null;
+    }
   },
 });
 
+
 export const propertyAction = propertySlice.actions;
-export default propertySlice;
+
+
+export default propertySlice.reducer;

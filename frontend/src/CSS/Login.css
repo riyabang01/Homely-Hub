@@ -1,47 +1,113 @@
-/* body {
-  background-image: url("../../public/assets/template.jpeg");
-  background-size: cover;
-  backdrop-filter: blur(5px);
-} */
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 
 .wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 4rem;
-  font-weight: 700;
+  margin-top: 3rem; 
   font-family: "Poppins", sans-serif;
   width: 100%;
+  padding: 0 15px; 
 }
 
 .wrapper form {
-  padding: 2.5rem 3rem;
-  padding-bottom: 4rem;
-  box-shadow: 1px 1px 5px#353736;
-  margin-bottom: 8rem;
+  width: 100%;
+  max-width: 480px; 
+  padding: 2.5rem 2.5rem;
+  background-color: #ffffff;
+  box-shadow: 1px 1px 8px #353736;
+  border-radius: 8px;
+  margin-bottom: 5rem; 
 }
 
 .wrapper form h1 {
   text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 2rem;
 }
+
+
+.wrapper .form-group {
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.wrapper .form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.wrapper .form-control {
+  height: 46px;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: inherit;
+}
+
+.wrapper .form-control:focus {
+  border-color: #0e8b53;
+  box-shadow: 0 0 0 0.2rem rgba(14, 139, 83, 0.15);
+  outline: none;
+}
+
 
 .wrapper form .loginbutton {
-  background-color: #0e8b53;
-  border-color: #8b8683;
+  background-color: #0e8b53; 
+  border: 1px solid #8b8683;
   color: white;
-  margin-top: 2.5rem;
-  box-shadow: 2px 2px 10px rgb(183, 170, 170);
+  margin-top: 1.5rem; 
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
   border-radius: 15px;
-}
-.wrapper form .loginbutton:hover {
-  background-color: rgba(1, 38, 7, 0.177);
-  border-color: rgb(2, 58, 11);
-  color: rgb(2, 58, 11);
-  font-weight: bold;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 2px 2px 10px rgb(183, 170, 170);
+  transition: all 0.2s ease-in-out; 
 }
 
+
+.wrapper form .loginbutton:hover,
+.wrapper form .loginbutton:focus {
+  background-color: #0c7546; 
+  border-color: #0c7546;
+  color: white;
+  box-shadow: 0 4px 12px rgba(12, 117, 70, 0.3);
+  transform: translateY(-1px); 
+  outline: none;
+}
+
+.wrapper form .loginbutton:active {
+  transform: translateY(0);
+}
+
+.wrapper form .loginbutton:disabled {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+
 .wrapper form a {
-  font-size: 0.9rem;
+  font-size: 0.87rem;
   color: grey;
+  text-decoration: none;
+  transition: color 0.2s;
+  display: inline-block;
+}
+
+.wrapper form a:hover {
+  color: #0e8b53;
+  text-decoration: underline;
 }

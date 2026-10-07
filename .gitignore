@@ -1,37 +1,47 @@
-# BACKEND
-backendObfuscated/node_modules/
-backendObfuscated/.env
-
-# FRONTEND
-frontend/node_modules/
-frontend/.env
-
-# DATABASE
+# DATABASE & DATA PATHS
 Database/
+.data/
 
-
-# GENERAL
-node_modules/
+# ENVIRONMENT CONFIGURATIONS (ALL SECRETS)
 *.env
-
-# DEPENDENCIES
-/node_modules
-/.pnp
-.pnp.js
-
-# TESTING
-/coverage
-
-# PRODUCTION
-/build
-
-# MISC
-.DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+config.env
+*/config.env
+backend/config.env
+backendObfuscated/config.env
+frontend/.env
 
+# DEPENDENCIES AND PACKAGES
+node_modules/
+/node_modules
+backendObfuscated/node_modules/
+frontend/node_modules/
+/.pnp
+.pnp.js
+
+# LOGS AND DEBUG PROFILES
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.logs/
+*.log
+
+# TESTING RUNTIMES
+/coverage
+.nyc_output/
+
+# PRODUCTION BUILDS AND EXPORTS
+/build
+/dist
+frontend/build/
+frontend/dist/
+
+# IDE, EDITORS AND SYSTEM MISC
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db

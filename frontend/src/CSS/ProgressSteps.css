@@ -1,36 +1,57 @@
-/* ProgressSteps.css */
 
 .checkout-progress {
   display: flex;
   justify-content: center;
-  margin-top: 5px;
+  align-items: center;
+  flex-wrap: wrap; 
+  margin-top: 2rem; 
+  gap: 10px; 
   text-decoration: none;
+  width: 100%;
+  padding: 0 15px;
 }
 
+
 .progress-button {
-  text-decoration: none;
+  text-decoration: none !important;
   color: black;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  margin-right: 10px;
-  background-color: #ddd; /* Default button color */
+  background-color: #ddd; 
+  font-size: 14px;
+  font-weight: 500; 
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease;
+  user-select: none;
 }
 
-.progress-button.active-button {
-  background-color: #0e8b53; /* Active button color */
-  color: white;
-}
-.progress-button.active-button:hover {
-  background-color: #0e8b53; /* Active button color */
-  color: white;
-  font-weight: 400;
-}
-.progress-button:hover {
-  text-decoration: none;
+
+.progress-button:hover,
+.progress-button:focus {
+  text-decoration: none !important;
   background-color: rgba(1, 38, 7, 0.177);
-  border-color: rgb(2, 58, 11);
   color: rgb(2, 58, 11);
-  font-weight: bold;
+  outline: none;
+}
+
+
+.progress-button.active-button {
+  background-color: #0e8b53; 
+  color: white;
+  box-shadow: 0 4px 10px rgba(14, 139, 83, 0.2);
+}
+
+.progress-button.active-button:hover,
+.progress-button.active-button:focus {
+  background-color: #0c7546; 
+  color: white;
+  box-shadow: 0 6px 14px rgba(12, 117, 70, 0.25);
+}
+
+.progress-button:active {
+  transform: translateY(1px);
 }

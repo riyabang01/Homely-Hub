@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -11,38 +12,59 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapComponent = ({ address }) => {
-  const city = `${address.city}, ${address.state}, ${address.pincode}`;
   const [coordinates, setCoordinates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const displayAddress = address
+    ? `${address.area ? address.area + ", " : ""}${address.city || ""}, ${address.state || ""}`
+    : "Location";
+
   useEffect(() => {
-    let isMounted = true; //to track component mount status
+    let isMounted = true;
+    if (!address) {
+      setLoading(false);
+      return;
+    }
 
     const fetchCoordinates = async () => {
       try {
-        console.log("useEffect");
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${city}`
-        );
+        const queryStrings = [
+          `${address.city || ""}, ${address.state || ""} ${address.pincode || ""}`,
+          `${address.city || ""}, ${address.state || ""}`,
+          `${address.state || ""}`
+        ].filter(Boolean);
 
-        const data = await response.json();
+        let data = [];
+        for (const query of queryStrings) {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`,
+            {
+              headers: {
+                "User-Agent": "HomelyHubStayApp/1.0"
+              }
+            }
+          );
+          data = await response.json();
+          if (data.length > 0) break;
+        }
 
         if (isMounted) {
           if (data.length > 0) {
-            const { lat, lon } = data[0];
-            console.log(lat, lon);
-
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
             setCoordinates([lat, lon]);
-            setLoading(false);
+            setError(null);
           } else {
-            setCoordinates([]);
+            setCoordinates([32.2396, 77.1887]);
           }
+          setLoading(false);
         }
-      } catch (error) {
+      } catch (err) {
         if (isMounted) {
-          console.error("Error fetching geocoding data:", error);
-          setError("Error fetching coordinates");
+          console.error(err);
+          setCoordinates([32.2396, 77.1887]);
+          setLoading(false);
         }
       }
     };
@@ -52,27 +74,25 @@ const MapComponent = ({ address }) => {
     return () => {
       isMounted = false;
     };
-  }, [city]);
+  }, [address]);
 
   return (
     <div>
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {coordinates.length > 0 && (
+      {loading && <p style={{ textAlign: "center", padding: "10px" }}>Loading Map...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {coordinates.length === 2 && (
         <MapContainer
           center={coordinates}
-          zoom={coordinates.length > 0 ? 13 : 1}
-          style={{ height: "320px", width: "100%" }}
+          zoom={13}
+          style={{ height: "320px", width: "100%", borderRadius: "8px", zIndex: 0 }}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          {coordinates.length > 0 && (
-            <Marker position={coordinates}>
-              <Popup>{city}</Popup>
-            </Marker>
-          )}
+          <Marker position={coordinates}>
+            <Popup>{displayAddress}</Popup>
+          </Marker>
         </MapContainer>
       )}
     </div>

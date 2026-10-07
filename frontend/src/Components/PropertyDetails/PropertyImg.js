@@ -10,11 +10,11 @@ setIsModalOpen (false);
 }; 
 return (<>
     <div className="property-img-container">
-    {/* creating the first image */}
+   
     <div className="img-item first-image">
     <img className="images" src={images [0].url} alt="property-1" />
     </div>
-    {/* remaining 4 images */}
+    
     {images.slice(1, 5).map((image, index) => (
     <div key={index} className="img-item">
     <img
