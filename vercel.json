@@ -1,13 +1,15 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "$schema": "https://vercel.sh",
   "services": {
     "backendobfuscated": {
       "root": "backendObfuscated",
-      "framework": "express"
+      "framework": "express",
+      "installCommand": "npm install --legacy-peer-deps"
     },
     "frontend": {
       "root": "frontend",
-      "framework": "create-react-app"
+      "framework": "create-react-app",
+      "installCommand": "npm install --legacy-peer-deps"
     }
   },
   "rewrites": [
