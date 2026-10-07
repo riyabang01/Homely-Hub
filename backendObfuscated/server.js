@@ -4,42 +4,44 @@ const path = require('path');
 const dns = require('dns');
 
 process.on('uncaughtException', (err) => {
-    console.error(' UNCAUGHT EXCEPTION! Shutting down server runtime...');
+    console.error('UNCAUGHT EXCEPTION! Shutting down...');
     console.error(err.name, ':', err.message);
     process.exit(1);
 });
 
-dns.setServers(['8.8.8.8', '8.8.4.4']);
-
-dotenv.config({ path: path.join(__dirname, './config.env') });
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({ path: path.join(__dirname, './config.env') });
+    dns.setServers(['8.8.8.8', '8.8.4.4']);
+}
 
 const app = require('./app');
-
 const DB = process.env.DATABASE_CLOUD;
 
-console.log(' Initializing database sync connection with tracking path:', DB);
+let isConnected = false;
+const connectDB = async () => {
+    if (isConnected) return;
+    try {
+        await mongoose.connect(DB, {
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000
+        });
+        isConnected = true;
+        console.log('MongoDB Database connected');
+    } catch (err) {
+        console.error('Mongoose connection error:', err.message);
+    }
+};
 
-mongoose.connect(DB, {
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000
-})
-.then(() => {
-    console.log(' MongoDB Database connected');
-})
-.catch((err) => {
-    console.error(' Mongoose initial connection error:', err.message);
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
 });
 
-const port = process.env.PORT || 8000;
-
-const server = app.listen(port, () => {
-    console.log(` HomelyHub is running on port: ${port}`);
-});
-
-process.on('unhandledRejection', (err) => {
-    console.error(' UNHANDLED REJECTION! Gracefully terminating connection tubes...');
-    console.error(err.name, ':', err.message);
-    server.close(() => {
-        process.exit(1);
+if (process.env.NODE_ENV !== 'production') {
+    const port = process.env.PORT || 8000;
+    app.listen(port, () => {
+        console.log(`HomelyHub is running locally on port: ${port}`);
     });
-});
+}
+
+module.exports = app;
