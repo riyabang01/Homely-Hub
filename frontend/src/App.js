@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useEffect } from "react";
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, Navigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Flip, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,6 +23,7 @@ import { currentUser } from "./Store/User/user-action";
 
 function App() {
   const dispatch = useDispatch();
+  const { isAuthenticated, loading } = useSelector((state) => state.user || {});
 
   useEffect(() => {
     dispatch(currentUser());
@@ -31,14 +32,21 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route 
+          path="/" 
+          element={loading ? null : isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
+        />
 
         <Route id="login" path="/login" element={<Login />} />
         <Route id="signup" path="/signup" element={<Signup />} />
         <Route id="forgotPassword" path="/user/forgotpassword" element={<ForgotPassword />} />
         <Route id="resetPassword" path="/user/resetPassword/:token" element={<ResetPassword />} />
 
-        <Route path="/home" element={<Main />} id="main">
+        <Route 
+          path="/home" 
+          element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />} 
+          id="main"
+        >
           <Route id="home" index element={<PropertyList />} />
           <Route id="propertyDetails" path="propertylist/:id" element={<PropertyDetails />} />
           <Route path="booking-success" element={<BookingSuccess />} />
