@@ -12,18 +12,18 @@
       "installCommand": "npm install --legacy-peer-deps"
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": {
-        "service": "backendobfuscated"
-      }
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/((?!api).*)",
-      "destination": {
-        "service": "frontend"
-      }
+      "src": "/static/(.*)",
+      "dest": "frontend/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/index.html"
     }
   ]
 }
