@@ -1,9 +1,8 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "$schema": "https://vercel.sh",
   "services": {
     "backendobfuscated": {
       "root": "backendObfuscated",
-      "entrypoint": "server.js",
       "framework": "express",
       "installCommand": "npm install --legacy-peer-deps"
     },
@@ -16,15 +15,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": {
-        "service": "backendobfuscated"
-      }
+      "destination": "backendObfuscated/server.js"
     },
     {
       "source": "/((?!api).*)",
-      "destination": {
-        "service": "frontend"
-      }
+      "destination": "frontend/index.html"
     }
   ]
 }
