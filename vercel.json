@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vercel.sh",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
     "backendobfuscated": {
       "root": "backendObfuscated",
@@ -9,17 +9,21 @@
     "frontend": {
       "root": "frontend",
       "framework": "create-react-app",
-      "installCommand": "npm install --legacy-peer-deps",
-      "routes": [
-        { "handle": "filesystem" },
-        { "src": "/(.*)", "dest": "/index.html" }
-      ]
+      "installCommand": "npm install --legacy-peer-deps"
     }
   },
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "destination": {
+        "service": "backendobfuscated"
+      }
+    },
+    {
+      "source": "/((?!api).*)",
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }
