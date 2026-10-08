@@ -9,7 +9,10 @@
     "frontend": {
       "root": "frontend",
       "framework": "create-react-app",
-      "installCommand": "npm install --legacy-peer-deps"
+      "installCommand": "npm install --legacy-peer-deps",
+      "rewrites": [
+        { "source": "/(.*)", "destination": "/index.html" }
+      ]
     }
   },
   "rewrites": [
