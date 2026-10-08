@@ -9,27 +9,22 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const app = require('./app');
-const DB = process.env.DATABASE_CLOUD;
+const DB = process.env.DATABASE_CLOUD || "mongodb+srv://riyabang617:riya2003@cluster0.hyg3u.mongodb.net/HomelyHub?retryWrites=true&w=majority&appName=Cluster0";
 
-let isConnected = false;
 const connectDB = async () => {
-    if (isConnected && mongoose.connection.readyState === 1) return;
+    if (mongoose.connection.readyState === 1) return;
     try {
         await mongoose.connect(DB, {
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000
         });
-        isConnected = true;
         console.log('MongoDB Database connected');
     } catch (err) {
         console.error('Mongoose connection error:', err.message);
     }
 };
 
-app.use(async (req, res, next) => {
-    await connectDB();
-    next();
-});
+connectDB();
 
 const port = process.env.PORT || 8000;
 if (process.env.NODE_ENV !== 'production') {
