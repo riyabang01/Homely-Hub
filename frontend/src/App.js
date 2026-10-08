@@ -16,7 +16,7 @@ import Signup from "./Components/User/Signup";
 import Profile from "./Components/User/Profile";
 import EditProfile from "./Components/User/EditProfile";
 import UpdatePassword from "./Components/User/UpdatePassword";
-import ForgotPassword from "./Components/User/ForgotPassword"; 
+import ForgotPassword = from "./Components/User/ForgotPassword"; 
 import ResetPassword from "./Components/User/ResetPassword";   
 
 import { currentUser } from "./Store/User/user-action";
@@ -31,7 +31,7 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
 
         <Route id="login" path="/login" element={<Login />} />
         <Route id="signup" path="/signup" element={<Signup />} />
