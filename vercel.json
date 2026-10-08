@@ -20,13 +20,7 @@
       }
     },
     {
-      "source": "/static/:path*",
-      "destination": {
-        "service": "frontend"
-      }
-    },
-    {
-      "source": "/((?!api).*)",
+      "source": "/(.*)",
       "destination": {
         "service": "frontend"
       }
