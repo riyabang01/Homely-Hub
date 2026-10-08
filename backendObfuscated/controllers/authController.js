@@ -7,26 +7,24 @@ const sendEmail = require('../utils/Email');
 const crypto = require('crypto');
 const cloudinary = require('../utils/Cloudinary');
 
-
-
 const signToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
+    const secret = process.env.JWT_SECRET || "fallback_super_secret_homely_hub_key_2026";
+    const expires = process.env.JWT_EXPIRES_IN || "90d";
+    return jwt.sign({ id }, secret, { expiresIn: expires });
 };
 
 const createSendToken = (user, statusCode, res) => {
     const token = signToken(user._id);
+    
     const cookieOptions = {
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true
+        expires: new Date(Date.now() + (Number(process.env.JWT_COOKIE_EXPIRES_IN) || 90) * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
     };
-
-    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
     res.cookie('jwt', token, cookieOptions);
     user.password = undefined; 
-
     
     res.status(statusCode).json({
         status: 'success',
@@ -45,7 +43,6 @@ const filterObj = (obj, ...allowedFields) => {
 
 const defaultAvatarUrl = 'https://ftcdn.net';
 
-
 exports.signup = async (req, res) => {
     try {
         const newUser = await User.create({
@@ -63,7 +60,6 @@ exports.signup = async (req, res) => {
         res.status(400).json({ status: 'fail', message: err.message });
     }
 };
-
 
 exports.login = async (req, res) => {
     try {
@@ -85,15 +81,15 @@ exports.login = async (req, res) => {
     }
 };
 
-
 exports.logout = (req, res) => {
     res.cookie('jwt', 'loggedout', {
         expires: new Date(Date.now() + 10 * 1000),
-        httpOnly: true
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
     });
     res.status(200).json({ status: 'success' });
 };
-
 
 exports.protect = async (req, res, next) => {
     try {
@@ -108,7 +104,8 @@ exports.protect = async (req, res, next) => {
             return res.status(401).json({ status: 'fail', message: 'You are not Logged!! Please log in to get access' });
         }
 
-        const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+        const secret = process.env.JWT_SECRET || "fallback_super_secret_homely_hub_key_2026";
+        const decoded = await promisify(jwt.verify)(token, secret);
         const currentUser = await User.findById(decoded.id);
 
         if (!currentUser) {
@@ -125,7 +122,6 @@ exports.protect = async (req, res, next) => {
         res.status(401).json({ status: 'fail', message: err.message });
     }
 };
-
 
 exports.updateMe = async (req, res) => {
     try {
@@ -153,7 +149,6 @@ exports.updateMe = async (req, res) => {
             runValidators: true
         });
 
-        
         res.status(200).json({
             status: 'success',
             user: updatedUser
@@ -162,7 +157,6 @@ exports.updateMe = async (req, res) => {
         res.status(400).json({ status: 'fail', message: err.message });
     }
 };
-
 
 exports.updatePassword = async (req, res) => {
     try {
@@ -182,7 +176,6 @@ exports.updatePassword = async (req, res) => {
     }
 };
 
-
 exports.forgotPassword = async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });
@@ -193,7 +186,6 @@ exports.forgotPassword = async (req, res) => {
         const resetToken = user.createPasswordResetToken();
         await user.save({ validateBeforeSave: false });
 
-        
         const clientDomain = process.env.FRONTEND_URL || 'http://localhost:3000';
         const resetURL = `${clientDomain}/user/resetPassword/${resetToken}`;
         
