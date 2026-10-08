@@ -13,7 +13,6 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { isAuthenticated, errors, loading } = useSelector(
     (state) => state.user || {}
@@ -25,23 +24,24 @@ const Login = () => {
       toast.error("Please fill in all layout field values.");
       return;
     }
-    setIsSubmitting(true);
     dispatch(getLogIn({ email, password }));
   };
 
   useEffect(() => {
-    if (errors && isSubmitting) {
-      const errorMessage = typeof errors === "string" ? errors : errors || "Invalid login credentials.";
+    if (errors) {
+      
+      const errorMessage = typeof errors === "string" ? errors : errors[0] || "Invalid login credentials.";
       toast.error(errorMessage);
+      
+      
       dispatch(userActions.clearError());
-      setIsSubmitting(false);
     }
 
     if (isAuthenticated) {
-      navigate("/home");
+      navigate("/");
       toast.success("User has logged in successfully!");
     }
-  }, [isAuthenticated, errors, navigate, dispatch, isSubmitting]);
+  }, [isAuthenticated, errors, navigate, dispatch]);
 
   return (
     <>
@@ -83,7 +83,7 @@ const Login = () => {
                 <Link to="/signup" className="small text-decoration-none">
                   New user? Register here
                 </Link>
-                <Link to="/user/forgotpassword" className="small text-decoration-none text-toggle text-muted">
+                <Link to="/user/forgotpassword" className="small text-decoration-none text-muted">
                   Forgot Password?
                 </Link>
               </div>
