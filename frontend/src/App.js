@@ -1,18 +1,15 @@
 import "./App.css";
 import React, { useEffect } from "react";
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Flip, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 import Main from "./Components/Home/Main";
 import PropertyList from "./Components/Home/PropertyList";
 import PropertyDetails from "./Components/PropertyDetails/PropertyDetails";
 import BookingSuccess from './Components/PropertyDetails/BookingSuccess';
-
 import Payment from "./Payment/payment"; 
-
 
 import Login from "./Components/User/Login";
 import Signup from "./Components/User/Signup";
@@ -21,7 +18,6 @@ import EditProfile from "./Components/User/EditProfile";
 import UpdatePassword from "./Components/User/UpdatePassword";
 import ForgotPassword from "./Components/User/ForgotPassword"; 
 import ResetPassword from "./Components/User/ResetPassword";   
-
 
 import { currentUser } from "./Store/User/user-action";
 
@@ -34,27 +30,24 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Main />} id="main">
-        
-        <Route id="home" index element={<PropertyList />} />
-        <Route id="propertyDetails" path="propertylist/:id" element={<PropertyDetails />} />
-         <Route path="/booking-success" element={<BookingSuccess />} />
-         
-        <Route id="payment" path="payment" element={<Payment />} /> 
-        
-        
-        <Route id="login" path="login" element={<Login />} />
-        <Route id="signup" path="signup" element={<Signup />} />
-        
-   
-        <Route id="forgotPassword" path="user/forgotpassword" element={<ForgotPassword />} />
-        <Route id="resetPassword" path="user/resetPassword/:token" element={<ResetPassword />} />
-        <Route id="updatePassword" path="user/updatepassword" element={<UpdatePassword />} />
-        
-        
-        <Route id="profile" path="profile" element={<Profile />} />
-        <Route id="editProfile" path="editprofile" element={<EditProfile />} />
-      </Route>
+      <>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        <Route id="login" path="/login" element={<Login />} />
+        <Route id="signup" path="/signup" element={<Signup />} />
+        <Route id="forgotPassword" path="/user/forgotpassword" element={<ForgotPassword />} />
+        <Route id="resetPassword" path="/user/resetPassword/:token" element={<ResetPassword />} />
+
+        <Route path="/home" element={<Main />} id="main">
+          <Route id="home" index element={<PropertyList />} />
+          <Route id="propertyDetails" path="propertylist/:id" element={<PropertyDetails />} />
+          <Route path="booking-success" element={<BookingSuccess />} />
+          <Route id="payment" path="payment" element={<Payment />} /> 
+          <Route id="updatePassword" path="user/updatepassword" element={<UpdatePassword />} />
+          <Route id="profile" path="profile" element={<Profile />} />
+          <Route id="editProfile" path="editprofile" element={<EditProfile />} />
+        </Route>
+      </>
     )
   );
 
