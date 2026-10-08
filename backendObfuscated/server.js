@@ -14,10 +14,10 @@ const DB = process.env.DATABASE_CLOUD || "mongodb+srv://riyabang617:riya2003@clu
 const connectDB = async () => {
     if (mongoose.connection.readyState >= 1) return;
     try {
+        mongoose.set('bufferCommands', false);
         await mongoose.connect(DB, {
             serverSelectionTimeoutMS: 5000,
-            socketTimeoutMS: 45000,
-            bufferCommands: false
+            socketTimeoutMS: 45000
         });
         console.log('MongoDB Database connected');
     } catch (err) {
@@ -25,18 +25,19 @@ const connectDB = async () => {
     }
 };
 
-const port = process.env.PORT || 8000;
+app.use(async (req, res, next) => {
+    mongoose.set('bufferCommands', false);
+    await connectDB();
+    next();
+});
 
+const port = process.env.PORT || 8000;
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(port, async () => {
-        await connectDB();
+    app.listen(port, () => {
         console.log(`HomelyHub is running locally on port: ${port}`);
     });
 } else {
-    const server = app.listen(port);
-    server.on('listening', async () => {
-        await connectDB();
-    });
+    app.listen(port);
 }
 
 module.exports = app;
