@@ -4,6 +4,7 @@ import { userActions } from "./user-slice";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.patch['Content-Type'] = 'application/json';
+axios.defaults.headers.get['Content-Type'] = 'application/json';
 
 const getErrorMessage = (error) => {
   if (error.response && error.response.data && error.response.data.message) {
