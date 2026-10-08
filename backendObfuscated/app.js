@@ -9,22 +9,46 @@ const app = express();
 
 const DB = process.env.DATABASE_CLOUD || "mongodb+srv://riyabang617:riya2003@cluster0.hyg3u.mongodb.net/HomelyHub?retryWrites=true&w=majority&appName=Cluster0";
 
+let cachedConnection = global.mongoose;
+
+if (!cachedConnection) {
+    cachedConnection = global.mongoose = { conn: null, promise: null };
+}
+
 const connectDB = async () => {
-    if (mongoose.connection.readyState >= 1) return;
-    try {
-        mongoose.set('bufferCommands', false);
-        await mongoose.connect(DB, {
-            serverSelectionTimeoutMS: 8000,
-            socketTimeoutMS: 45000
-        });
-    } catch (err) {
-        console.error('MongoDB connection error:', err.message);
+    if (cachedConnection.conn) {
+        return cachedConnection.conn;
     }
+
+    if (!cachedConnection.promise) {
+        mongoose.set('bufferCommands', false);
+        cachedConnection.promise = mongoose.connect(DB, {
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000
+        }).then((mongooseInstance) => {
+            console.log('MongoDB Database connected successfully via Cache');
+            return mongooseInstance;
+        });
+    }
+
+    try {
+        cachedConnection.conn = await cachedConnection.promise;
+    } catch (e) {
+        cachedConnection.promise = null;
+        console.error('Mongoose connection error cache failed:', e.message);
+        throw e;
+    }
+
+    return cachedConnection.conn;
 };
 
 app.use(async (req, res, next) => {
-    await connectDB();
-    next();
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        res.status(500).json({ status: 'error', message: 'Database connection could not be established.' });
+    }
 });
 
 app.use(cors({
