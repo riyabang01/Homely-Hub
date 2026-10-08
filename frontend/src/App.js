@@ -16,7 +16,7 @@ import Signup from "./Components/User/Signup";
 import Profile from "./Components/User/Profile";
 import EditProfile from "./Components/User/EditProfile";
 import UpdatePassword from "./Components/User/UpdatePassword";
-import ForgotPassword = from "./Components/User/ForgotPassword"; 
+import ForgotPassword from "./Components/User/ForgotPassword"; 
 import ResetPassword from "./Components/User/ResetPassword";   
 
 import { currentUser } from "./Store/User/user-action";
