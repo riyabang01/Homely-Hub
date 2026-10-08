@@ -15,11 +15,15 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "backendObfuscated/server.js"
+      "destination": {
+        "service": "backendobfuscated"
+      }
     },
     {
       "source": "/((?!api).*)",
-      "destination": "frontend/index.html"
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }
