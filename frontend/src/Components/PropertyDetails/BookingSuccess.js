@@ -42,29 +42,8 @@ const BookingSuccess = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: "20px", maxWidth: "800px", margin: "auto", fontFamily: "Arial, sans-serif" }}>
-        <div style={{ textAlign: "center", marginBottom: "30px", opacity: 0.5 }}>
-          <div style={{ width: "200px", height: "32px", backgroundColor: "#e0e0e0", margin: "auto", borderRadius: "4px", marginBottom: "10px" }}></div>
-          <div style={{ width: "300px", height: "16px", backgroundColor: "#e0e0e0", margin: "auto", borderRadius: "4px" }}></div>
-        </div>
-        {[1, 2].map((n) => (
-          <div key={n} style={{ border: "1px solid #e0e0e0", padding: "20px", borderRadius: "8px", backgroundColor: "#fff", marginBottom: "20px", opacity: 0.6 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
-              <div style={{ width: "120px", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "4px" }}></div>
-              <div style={{ width: "150px", height: "14px", backgroundColor: "#e0e0e0", borderRadius: "4px" }}></div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <div style={{ width: "100%", height: "16px", backgroundColor: "#e0e0e0", borderRadius: "4px" }}></div>
-                <div style={{ width: "80%", height: "16px", backgroundColor: "#e0e0e0", borderRadius: "4px" }}></div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <div style={{ width: "90%", height: "16px", backgroundColor: "#e0e0e0", borderRadius: "4px" }}></div>
-                <div style={{ width: "60%", height: "16px", backgroundColor: "#e0e0e0", borderRadius: "4px" }}></div>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div style={{ textAlign: "center", marginTop: "50px", fontFamily: "Arial, sans-serif" }}>
+        <h2>Loading bookings...</h2>
       </div>
     );
   }
