@@ -29,13 +29,21 @@ function App() {
     dispatch(currentUser());
   }, [dispatch]);
 
+  const RootRedirect = () => {
+    if (loading) {
+      return (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontFamily: "Arial, sans-serif" }}>
+          <h2>Connecting to HomelyHub...</h2>
+        </div>
+      );
+    }
+    return isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />;
+  };
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route 
-          path="/" 
-          element={loading ? null : isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
-        />
+        <Route path="/" element={<RootRedirect />} />
 
         <Route id="login" path="/login" element={!loading && isAuthenticated ? <Navigate to="/home" replace /> : <Login />} />
         <Route id="signup" path="/signup" element={!loading && isAuthenticated ? <Navigate to="/home" replace /> : <Signup />} />
