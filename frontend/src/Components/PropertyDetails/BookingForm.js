@@ -54,21 +54,6 @@ const BookingForm = ({
     handleFilterChange("totalPrice", calculatedTotalPrice);
   };
 
-  const isDateDisabled = (current) => {
-    if (!current) return false;
-    
-    const currentMoment = moment(current.valueOf());
-    
-    const isPastDate = currentMoment.isBefore(moment(), "day");
-    if (isPastDate) return true;
-
-    return currentBookings.some((booking) => {
-      const start = moment(booking.fromDate, "YYYY-MM-DD").startOf("day");
-      const end = moment(booking.toDate, "YYYY-MM-DD").endOf("day");
-      return currentMoment.isBetween(start, end, "day", "[]");
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsBooking(true); 
@@ -136,7 +121,6 @@ const BookingForm = ({
             <Space direction="vertical" size="12">
               <RangePicker 
                 format="DD-MM-YYYY" 
-                disabledDate={isDateDisabled} 
                 onChange={handleDateChange} 
               />
             </Space>
