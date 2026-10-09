@@ -33,7 +33,7 @@ Card.propTypes = {
 };
 
 const PropertyList = () => {
-  // Simplified state from an object to a straightforward primitive number
+ 
   const [currentPage, setCurrentPage] = useState(1);
   
   const { properties, totalProperties } = useSelector(
@@ -45,7 +45,7 @@ const PropertyList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Explicitly mapping the primitive value to the search parameters payload format
+   
     dispatch(propertyAction.updateSearchParams({ page: currentPage }));
     dispatch(getAllProperties());
   }, [currentPage, dispatch]);
