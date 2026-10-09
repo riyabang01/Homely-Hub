@@ -20,9 +20,10 @@
       }
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": {
-        "service": "frontend"
+        "service": "frontend",
+        "path": "/index.html"
       }
     }
   ]
