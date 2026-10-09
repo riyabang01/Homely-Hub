@@ -65,8 +65,12 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
+
 app.use('/api/v1/rent/listing', propertyRoutes);
+app.use('/v1/rent/listing', propertyRoutes);
+
 app.use('/api/v1/rent/user', userRoutes);
+app.use('/v1/rent/user', userRoutes);
 
 app.all('*', (req, res, next) => {
     res.status(404).json({
