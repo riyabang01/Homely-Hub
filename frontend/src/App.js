@@ -24,15 +24,15 @@ import { currentUser } from "./Store/User/user-action";
 const RootRedirect = () => {
   const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
 
-  if (!loading && isAuthenticated) {
-    return <Navigate to="/home" replace />;
-  }
-  
-  if (!loading && !isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#fff" }}>
+        <h2>Connecting to HomelyHub...</h2>
+      </div>
+    );
   }
 
-  return <Login />;
+  return isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />;
 };
 
 const ProtectedElement = ({ element: Element }) => {
