@@ -8,14 +8,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const app = require('./app');
-
 const port = process.env.PORT || 8000;
+
 if (process.env.NODE_ENV !== 'production') {
     app.listen(port, () => {
         console.log(`HomelyHub is running locally on port: ${port}`);
     });
-} else {
-    app.listen(port);
 }
 
 module.exports = app;
