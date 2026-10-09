@@ -31,7 +31,7 @@ const BookingSuccess = () => {
         console.error("Booking API Error Object:", err);
         setError(
           err.response?.data?.message || 
-          `Database Error: ${err.message || "Failed to load database profiles."}`
+          `Database Error: ${err.message || "Failed to load profiles."}`
         );
         setLoading(false);
       }
