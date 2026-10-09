@@ -27,7 +27,6 @@ const connectDB = async () => {
             serverSelectionTimeoutMS: 15000,
             socketTimeoutMS: 45000
         }).then((mongooseInstance) => {
-            console.log('MongoDB Database connected successfully via Cache');
             return mongooseInstance;
         });
     }
@@ -36,7 +35,6 @@ const connectDB = async () => {
         cachedConnection.conn = await cachedConnection.promise;
     } catch (e) {
         cachedConnection.promise = null;
-        console.error('Mongoose connection error cache failed:', e.message);
         throw e;
     }
 
@@ -65,17 +63,16 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-
 app.use('/api/v1/rent/listing', propertyRoutes);
 app.use('/v1/rent/listing', propertyRoutes);
 
 app.use('/api/v1/rent/user', userRoutes);
 app.use('/v1/rent/user', userRoutes);
 
-app.all('*', (req, res, next) => {
+app.use('/api/*', (req, res) => {
     res.status(404).json({
         status: 'fail',
-        message: `Can't find ${req.originalUrl} on this server!`
+        message: `Can't find ${req.originalUrl} on this API server!`
     });
 });
 
