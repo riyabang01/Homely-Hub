@@ -11,17 +11,28 @@ const BookingSuccess = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axios.get("/api/v1/rent/user/booking", {
-          withCredentials: true
+        const response = await axios({
+          method: "get",
+          url: "/api/v1/rent/user/booking",
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          }
         });
 
         if (response.data && response.data.bookings) {
           setAllBookings(response.data.bookings);
+        } else if (response.data && response.data.allBookings) {
+          setAllBookings(response.data.allBookings);
         }
         setLoading(false);
       } catch (err) {
-        console.error(err);
-        setError(err.response?.data?.message || "Failed to load database profiles.");
+        console.error("Booking API Error Object:", err);
+        setError(
+          err.response?.data?.message || 
+          `Database Error: ${err.message || "Failed to load database profiles."}`
+        );
         setLoading(false);
       }
     };
@@ -39,8 +50,9 @@ const BookingSuccess = () => {
 
   if (error) {
     return (
-      <div style={{ textAlign: "center", marginTop: "50px", fontFamily: "Arial, sans-serif", color: "red" }}>
+      <div style={{ textAlign: "center", marginTop: "50px", fontFamily: "Arial, sans-serif", color: "red", padding: "20px" }}>
         <h2>{error}</h2>
+        <p style={{ color: "#555", fontSize: "14px" }}>Please verify you are fully logged into your profile session.</p>
         <button onClick={() => navigate("/")} style={btnStyle}>Go to Home Page</button>
       </div>
     );
