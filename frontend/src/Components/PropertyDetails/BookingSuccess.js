@@ -11,7 +11,7 @@ const BookingSuccess = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/rent/user/booking", {
+        const response = await axios.get("/api/v1/rent/user/booking", {
           withCredentials: true
         });
 
