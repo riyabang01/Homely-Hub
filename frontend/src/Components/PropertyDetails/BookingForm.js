@@ -88,7 +88,7 @@ const BookingForm = ({
     };
 
     try {
-      const response = await axios.post("http://localhost:8000/api/v1/rent/user/booking/new", finalBookingDetails, {
+      const response = await axios.post("/api/v1/rent/user/booking/new", finalBookingDetails, {
         withCredentials: true
       });
 
