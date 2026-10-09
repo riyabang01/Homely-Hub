@@ -4,6 +4,7 @@
     "backendobfuscated": {
       "root": "backendObfuscated",
       "framework": "express",
+      "entrypoint": "server.js",
       "installCommand": "npm install --legacy-peer-deps"
     },
     "frontend": {
