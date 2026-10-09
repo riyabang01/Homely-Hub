@@ -21,7 +21,7 @@
       }
     },
     {
-      "source": "/((?!api/|static/|favicon.ico|manifest.json).*)",
+      "source": "/((?!api/).*)",
       "destination": {
         "service": "frontend",
         "path": "/index.html"
