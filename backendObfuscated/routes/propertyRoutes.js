@@ -7,16 +7,13 @@ const router = express.Router();
 router.route("/")
   .get(propertyController.getProperties);
 
-
 router.route("/me")
   .get(authController.protect, propertyController.getUsersProperties);
 
- 
-router.route("/:id")
-  .get(propertyController.getProperty);
-
-
 router.route("/new")
   .post(authController.protect, propertyController.createProperty);
+
+router.route("/:id")
+  .get(propertyController.getProperty);
 
 module.exports = router;
