@@ -21,57 +21,81 @@ import ResetPassword from "./Components/User/ResetPassword";
 
 import { currentUser } from "./Store/User/user-action";
 
+const RootRedirect = () => {
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#fff" }}>
+        <h2>Connecting to HomelyHub...</h2>
+      </div>
+    );
+  }
+
+  return isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />;
+};
+
+const ProtectedElement = ({ element: Element }) => {
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
+
+  if (loading) return null;
+  return isAuthenticated ? <Element /> : <Navigate to="/login" replace />;
+};
+
+const PublicElement = ({ element: Element }) => {
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
+
+  if (loading) return null;
+  return isAuthenticated ? <Navigate to="/home" replace /> : <Element />;
+};
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      <Route path="/" element={<RootRedirect />} />
+
+      <Route id="login" path="/login" element={<PublicElement element={Login} />} />
+      <Route id="signup" path="/signup" element={<PublicElement element={Signup} />} />
+      <Route id="forgotPassword" path="/user/forgotpassword" element={<ForgotPassword />} />
+      <Route id="resetPassword" path="/user/resetPassword/:token" element={<ResetPassword />} />
+
+      <Route path="/home" element={<ProtectedElement element={Main} />}>
+        <Route index element={<PropertyList />} />
+      </Route>
+
+      <Route path="/profile" element={<ProtectedElement element={Main} />}>
+        <Route index element={<Profile />} />
+      </Route>
+
+      <Route path="/editprofile" element={<ProtectedElement element={Main} />}>
+        <Route index element={<EditProfile />} />
+      </Route>
+
+      <Route path="/user/updatepassword" element={<ProtectedElement element={Main} />}>
+        <Route index element={<UpdatePassword />} />
+      </Route>
+
+      <Route path="/booking-success" element={<ProtectedElement element={Main} />}>
+        <Route index element={<BookingSuccess />} />
+      </Route>
+
+      <Route path="/payment" element={<ProtectedElement element={Main} />}>
+        <Route index element={<Payment />} />
+      </Route>
+
+      <Route path="/propertylist" element={<ProtectedElement element={Main} />}>
+        <Route path=":id" element={<PropertyDetails />} />
+      </Route>
+    </>
+  )
+);
+
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, loading } = useSelector((state) => state.user || {});
 
   useEffect(() => {
     dispatch(currentUser());
   }, [dispatch]);
-
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        <Route 
-          path="/" 
-          element={loading ? null : isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
-        />
-
-        <Route id="login" path="/login" element={!loading && isAuthenticated ? <Navigate to="/home" replace /> : <Login />} />
-        <Route id="signup" path="/signup" element={!loading && isAuthenticated ? <Navigate to="/home" replace /> : <Signup />} />
-        <Route id="forgotPassword" path="/user/forgotpassword" element={<ForgotPassword />} />
-        <Route id="resetPassword" path="/user/resetPassword/:token" element={<ResetPassword />} />
-
-        <Route path="/home" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
-          <Route index element={<PropertyList />} />
-        </Route>
-
-        <Route path="/profile" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
-          <Route index element={<Profile />} />
-        </Route>
-
-        <Route path="/editprofile" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
-          <Route index element={<EditProfile />} />
-        </Route>
-
-        <Route path="/user/updatepassword" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
-          <Route index element={<UpdatePassword />} />
-        </Route>
-
-        <Route path="/booking-success" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
-          <Route index element={<BookingSuccess />} />
-        </Route>
-
-        <Route path="/payment" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
-          <Route index element={<Payment />} />
-        </Route>
-
-        <Route path="/propertylist" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
-          <Route path=":id" element={<PropertyDetails />} />
-        </Route>
-      </>
-    )
-  );
 
   return (
     <div className="App">
