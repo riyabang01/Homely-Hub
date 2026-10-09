@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useEffect } from "react";
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, Navigate, useNavigate } from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Flip, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,38 +22,28 @@ import ResetPassword from "./Components/User/ResetPassword";
 import { currentUser } from "./Store/User/user-action";
 
 const RootRedirect = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated, loading } = useSelector((state) => state.user || {});
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
 
-  useEffect(() => {
-    if (loading === false) {
-      if (isAuthenticated) {
-        navigate("/home", { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
-    }
-  }, [isAuthenticated, loading, navigate]);
-
-  return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", width: "100vw", fontFamily: "Arial, sans-serif", backgroundColor: "#ffffff" }}>
-      <div style={{ textAlign: "center" }}>
-        <h2 style={{ color: "#007bff", margin: "0 0 10px 0" }}>HomelyHub</h2>
-        <p style={{ color: "#666", margin: 0 }}>Connecting to secure portal database...</p>
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#fff" }}>
+        <h2>Connecting to HomelyHub...</h2>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />;
 };
 
 const ProtectedElement = ({ element: Element }) => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || {});
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
 
   if (loading) return null;
   return isAuthenticated ? <Element /> : <Navigate to="/login" replace />;
 };
 
 const PublicElement = ({ element: Element }) => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || {});
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
 
   if (loading) return null;
   return isAuthenticated ? <Navigate to="/home" replace /> : <Element />;
