@@ -43,7 +43,7 @@ const BookingSuccess = () => {
   if (loading) {
     return (
       <div style={{ textAlign: "center", marginTop: "50px", fontFamily: "Arial, sans-serif" }}>
-        <h2>Loading bookings from database...</h2>
+        <h2>Loading bookings...</h2>
       </div>
     );
   }
