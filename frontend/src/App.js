@@ -37,28 +37,36 @@ function App() {
           element={loading ? null : isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
         />
 
-        <Route id="login" path="/login" element={<Login />} />
-        <Route id="signup" path="/signup" element={<Signup />} />
+        <Route id="login" path="/login" element={!loading && isAuthenticated ? <Navigate to="/home" replace /> : <Login />} />
+        <Route id="signup" path="/signup" element={!loading && isAuthenticated ? <Navigate to="/home" replace /> : <Signup />} />
         <Route id="forgotPassword" path="/user/forgotpassword" element={<ForgotPassword />} />
         <Route id="resetPassword" path="/user/resetPassword/:token" element={<ResetPassword />} />
 
-        <Route 
-          path="/home" 
-          element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />} 
-          id="main"
-        >
-          <Route id="home" index element={<PropertyList />} />
-          <Route path="booking-success" element={<BookingSuccess />} />
-          <Route id="payment" path="payment" element={<Payment />} /> 
-          <Route id="updatePassword" path="user/updatepassword" element={<UpdatePassword />} />
-          <Route id="profile" path="profile" element={<Profile />} />
-          <Route id="editProfile" path="editprofile" element={<EditProfile />} />
+        <Route path="/home" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
+          <Route index element={<PropertyList />} />
         </Route>
 
-        <Route 
-          path="/propertylist" 
-          element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}
-        >
+        <Route path="/profile" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
+          <Route index element={<Profile />} />
+        </Route>
+
+        <Route path="/editprofile" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
+          <Route index element={<EditProfile />} />
+        </Route>
+
+        <Route path="/user/updatepassword" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
+          <Route index element={<UpdatePassword />} />
+        </Route>
+
+        <Route path="/booking-success" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
+          <Route index element={<BookingSuccess />} />
+        </Route>
+
+        <Route path="/payment" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
+          <Route index element={<Payment />} />
+        </Route>
+
+        <Route path="/propertylist" element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}>
           <Route path=":id" element={<PropertyDetails />} />
         </Route>
       </>
