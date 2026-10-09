@@ -7,18 +7,32 @@ export const getAllProperties = () => async (dispatch, getState) => {
 
     const { searchParams } = getState().properties || {};
 
+    const cleanedParams = {};
+    if (searchParams) {
+      Object.keys(searchParams).forEach((key) => {
+        if (searchParams[key] !== undefined && searchParams[key] !== null && searchParams[key] !== "") {
+          cleanedParams[key] = searchParams[key];
+        }
+      });
+    }
+
     const response = await axios.get(`/api/v1/rent/listing`, {
-      params: searchParams,
+      params: cleanedParams,
       withCredentials: true
     });
 
-    const { data } = response;
+    const responseData = response.data;
 
-    if (data && data.success === false) {
-      throw new Error(data.message || "Failed to retrieve listing records from data models.");
+    if (responseData && responseData.success === false) {
+      throw new Error(responseData.message || "Failed to retrieve listing records from data models.");
     }
 
-    dispatch(propertyAction.getProperties(data));
+    const finalPayload = {
+      properties: responseData.data || [], 
+      totalProperties: responseData.all_properties || 0
+    };
+
+    dispatch(propertyAction.getProperties(finalPayload));
   } catch (error) {
     console.error("Fetch properties action process failure:", error);
 
