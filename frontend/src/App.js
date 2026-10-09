@@ -48,12 +48,18 @@ function App() {
           id="main"
         >
           <Route id="home" index element={<PropertyList />} />
-          <Route id="propertyDetails" path="propertylist/:id" element={<PropertyDetails />} />
           <Route path="booking-success" element={<BookingSuccess />} />
           <Route id="payment" path="payment" element={<Payment />} /> 
           <Route id="updatePassword" path="user/updatepassword" element={<UpdatePassword />} />
           <Route id="profile" path="profile" element={<Profile />} />
           <Route id="editProfile" path="editprofile" element={<EditProfile />} />
+        </Route>
+
+        <Route 
+          path="/propertylist" 
+          element={loading ? null : isAuthenticated ? <Main /> : <Navigate to="/login" replace />}
+        >
+          <Route path=":id" element={<PropertyDetails />} />
         </Route>
       </>
     )
