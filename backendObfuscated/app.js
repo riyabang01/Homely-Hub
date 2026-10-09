@@ -24,7 +24,7 @@ const connectDB = async () => {
     if (!cachedConnection.promise) {
         mongoose.set('bufferCommands', false);
         cachedConnection.promise = mongoose.connect(DB, {
-            serverSelectionTimeoutMS: 5000,
+            serverSelectionTimeoutMS: 15000,
             socketTimeoutMS: 45000
         }).then((mongooseInstance) => {
             console.log('MongoDB Database connected successfully via Cache');
@@ -53,7 +53,9 @@ app.use(async (req, res, next) => {
 });
 
 app.use(cors({
-    origin: true, 
+    origin: function (origin, callback) {
+        callback(null, true);
+    },
     credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
