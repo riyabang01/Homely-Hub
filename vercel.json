@@ -1,32 +1,24 @@
 {
-  "$schema": "https://vercel.sh",
-  "services": {
-    "backendobfuscated": {
-      "root": "backendObfuscated",
-      "framework": "express",
-      "entrypoint": "server.js",
-      "installCommand": "npm install --legacy-peer-deps"
-    },
-    "frontend": {
-      "root": "frontend",
-      "framework": "create-react-app",
-      "installCommand": "npm install --legacy-peer-deps"
-    }
-  },
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/:path*",
-      "destination": {
-        "service": "backendobfuscated",
-        "path": "/api/:path*"
-      }
+      "src": "backendObfuscated/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
+    }
+  ],
+  "routes": [
+    {
+      "source": "/api/(.*)",
+      "destination": "backendObfuscated/server.js"
     },
     {
       "source": "/((?!api/).*)",
-      "destination": {
-        "service": "frontend",
-        "path": "/index.html"
-      }
+      "destination": "frontend/index.html"
     }
   ]
 }
