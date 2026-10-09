@@ -16,7 +16,8 @@
     {
       "source": "/api/:path*",
       "destination": {
-        "service": "backendobfuscated"
+        "service": "backendobfuscated",
+        "path": "/api/:path*"
       }
     },
     {
