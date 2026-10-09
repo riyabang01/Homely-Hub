@@ -17,15 +17,13 @@
     {
       "source": "/api/:path*",
       "destination": {
-        "service": "backendobfuscated",
-        "path": "/api/:path*"
+        "service": "backendobfuscated"
       }
     },
     {
       "source": "/((?!api/).*)",
       "destination": {
-        "service": "frontend",
-        "path": "/index.html"
+        "service": "frontend"
       }
     }
   ]
