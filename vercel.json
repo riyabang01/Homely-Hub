@@ -21,7 +21,7 @@
       }
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": {
         "service": "frontend"
       }
