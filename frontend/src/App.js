@@ -1,7 +1,7 @@
 import "./App.css";
-import React, { useEffect } from "react";
+import React from "react";
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, Navigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Flip, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,8 +19,6 @@ import UpdatePassword from "./Components/User/UpdatePassword";
 import ForgotPassword from "./Components/User/ForgotPassword"; 
 import ResetPassword from "./Components/User/ResetPassword";   
 
-import { currentUser } from "./Store/User/user-action";
-
 const LoadingScreen = () => (
   <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#fff" }}>
     <h2>Connecting to HomelyHub...</h2>
@@ -28,21 +26,21 @@ const LoadingScreen = () => (
 );
 
 const RootRedirect = () => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: true });
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
 
   if (loading) return <LoadingScreen />;
   return isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />;
 };
 
 const ProtectedElement = ({ element: Element }) => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: true });
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
 
   if (loading) return <LoadingScreen />;
   return isAuthenticated ? <Element /> : <Navigate to="/login" replace />;
 };
 
 const PublicElement = ({ element: Element }) => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: true });
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
 
   if (loading) return <LoadingScreen />;
   return isAuthenticated ? <Navigate to="/home" replace /> : <Element />;
@@ -90,12 +88,6 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(currentUser());
-  }, [dispatch]);
-
   return (
     <div className="App">
       <RouterProvider router={router} />
