@@ -21,31 +21,30 @@ import ResetPassword from "./Components/User/ResetPassword";
 
 import { currentUser } from "./Store/User/user-action";
 
+const LoadingScreen = () => (
+  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#fff" }}>
+    <h2>Connecting to HomelyHub...</h2>
+  </div>
+);
+
 const RootRedirect = () => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: true });
 
-  if (loading) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#fff" }}>
-        <h2>Connecting to HomelyHub...</h2>
-      </div>
-    );
-  }
-
+  if (loading) return <LoadingScreen />;
   return isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />;
 };
 
 const ProtectedElement = ({ element: Element }) => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: true });
 
-  if (loading) return null;
+  if (loading) return <LoadingScreen />;
   return isAuthenticated ? <Element /> : <Navigate to="/login" replace />;
 };
 
 const PublicElement = ({ element: Element }) => {
-  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: false });
+  const { isAuthenticated, loading } = useSelector((state) => state.user || { isAuthenticated: false, loading: true });
 
-  if (loading) return null;
+  if (loading) return <LoadingScreen />;
   return isAuthenticated ? <Navigate to="/home" replace /> : <Element />;
 };
 
